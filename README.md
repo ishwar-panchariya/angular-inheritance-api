@@ -1,49 +1,40 @@
-🚀 Angular Inheritance-based API Handling
+# Angular Inheritance-based API Handling 🚀
 
-📌 Overview
+## Overview 📌
 
 This project demonstrates how to use inheritance in Angular to handle API calls efficiently, with built-in loading indicators and error handling.
 
-🎯 Features
+## Features 🎯 
 
-Reusable Base Component for API requests.
+- Reusable Base Component for API requests.
+- Loading Indicators to improve user experience.
+- Error Handling to manage failed API calls.
+- Clean & Maintainable Code using TypeScript inheritance.
 
-Loading Indicators to improve user experience.
-
-Error Handling to manage failed API calls.
-
-Clean & Maintainable Code using TypeScript inheritance.
-
-📂 Project Structure
-
-src/
-│── app/
-│   ├── core/
-│   │   ├── base.component.ts  # ✅ Handles API calls, loading, errors
-│   ├── users/
-│   │   ├── users.component.ts  # ✅ Extends BaseComponent
-│   │   ├── users.component.html  # ✅ Displays loading, errors, user list
-│   │   ├── users.component.css   # (Optional)
-
-🛠️ Installation & Setup
+## Installation & Setup 🛠️
 
 Clone the Repository
-
-git clone https://github.com/your-repo/angular-inheritance-api.git
+```
+git clone https://github.com/ishwar-panchariya/angular-inheritance-api.git
 cd angular-inheritance-api
+```
 
-Install Dependencies
-
+### Install Dependencies
+```
 npm install
+```
+We need `HttpClientModule` to make API requests in Angular. It’s already included in Angular, but we need to import it.'
 
-Run the Project
+## Implementation Details 📜
 
-ng serve
+### 1. Create a Reusable BaseComponent
+**Why Use a Base Component?**
 
-📜 Implementation Details
+In many Angular projects, different components need to make API requests. Instead of writing the same logic in multiple components, we move the common logic to a base component and reuse it across different components.
 
-🔹 1. Create a Reusable BaseComponent
+Create a new directory inside `src/app/` called `core/` and inside it, create a file named `base.component.ts`.
 
+```
 import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
@@ -66,9 +57,10 @@ export abstract class BaseComponent {
     );
   }
 }
+```
 
-🔹 2. Extend BaseComponent in UsersComponent
-
+### 2. Extend BaseComponent in UsersComponent
+```
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BaseComponent } from '../core/base.component';
@@ -93,9 +85,9 @@ export class UsersComponent extends BaseComponent implements OnInit {
       });
   }
 }
-
-🔹 3. Update users.component.html
-
+```
+### 3. Update users.component.html
+```
 <h2>User List</h2>
 <p *ngIf="isLoading">Loading users... 🔄</p>
 <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
@@ -113,24 +105,23 @@ export class UsersComponent extends BaseComponent implements OnInit {
       </tr>
     </tbody>
   </table>
+```
+### Run project
+```
+ng serve
+```
 
-
-✅ Expected Behavior
+## Expected Behavior ✅
 
 Initially, it shows "Loading users...".
-
 If the API is successful, it displays the user list.
-
 If the API fails, it shows an error message.
 
-🎯 Next Steps
+## Next Steps 🎯 
 
 Want to improve this further? Consider:
-
-Adding retry logic for failed API calls.
-
-Implementing custom loading spinners.
-
-Extending BaseComponent to handle POST, PUT, DELETE requests.
+- Adding retry logic for failed API calls.
+- Implementing custom loading spinners.
+- Extending BaseComponent to handle POST, PUT, DELETE requests.
 
 🚀 Happy Coding!
