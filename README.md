@@ -1,27 +1,136 @@
-# AngularInheritanceDemo
+🚀 Angular Inheritance-based API Handling
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.14.
+📌 Overview
 
-## Development server
+This project demonstrates how to use inheritance in Angular to handle API calls efficiently, with built-in loading indicators and error handling.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+🎯 Features
 
-## Code scaffolding
+Reusable Base Component for API requests.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Loading Indicators to improve user experience.
 
-## Build
+Error Handling to manage failed API calls.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Clean & Maintainable Code using TypeScript inheritance.
 
-## Running unit tests
+📂 Project Structure
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+src/
+│── app/
+│   ├── core/
+│   │   ├── base.component.ts  # ✅ Handles API calls, loading, errors
+│   ├── users/
+│   │   ├── users.component.ts  # ✅ Extends BaseComponent
+│   │   ├── users.component.html  # ✅ Displays loading, errors, user list
+│   │   ├── users.component.css   # (Optional)
 
-## Running end-to-end tests
+🛠️ Installation & Setup
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Clone the Repository
 
-## Further help
+git clone https://github.com/your-repo/angular-inheritance-api.git
+cd angular-inheritance-api
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Install Dependencies
+
+npm install
+
+Run the Project
+
+ng serve
+
+📜 Implementation Details
+
+🔹 1. Create a Reusable BaseComponent
+
+import { HttpClient } from '@angular/common/http';
+import { catchError, finalize, tap } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+
+export abstract class BaseComponent {
+  isLoading: boolean = false;
+  errorMessage: string = '';
+
+  constructor(protected http: HttpClient) {}
+
+  fetchData(url: string) {
+    this.isLoading = true;
+    return this.http.get(url).pipe(
+      tap(() => (this.errorMessage = '')),
+      catchError((error) => {
+        this.errorMessage = 'Failed to load data';
+        return throwError(() => new Error(error));
+      }),
+      finalize(() => (this.isLoading = false))
+    );
+  }
+}
+
+🔹 2. Extend BaseComponent in UsersComponent
+
+import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BaseComponent } from '../core/base.component';
+
+@Component({
+  selector: 'app-users',
+  templateUrl: './users.component.html',
+  styleUrls: ['./users.component.css']
+})
+export class UsersComponent extends BaseComponent implements OnInit {
+  users: any[] = [];
+
+  constructor(http: HttpClient) {
+    super(http);
+  }
+
+  ngOnInit() {
+    this.fetchData('https://jsonplaceholder.typicode.com/users')
+      .subscribe({
+        next: (data) => (this.users = data as any[]),
+        error: (err) => console.error('Error:', err)
+      });
+  }
+}
+
+🔹 3. Update users.component.html
+
+<h2>User List</h2>
+<p *ngIf="isLoading">Loading users... 🔄</p>
+<p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
+<table *ngIf="!isLoading && !errorMessage && users.length > 0" border="1">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+✅ Expected Behavior
+
+Initially, it shows "Loading users...".
+
+If the API is successful, it displays the user list.
+
+If the API fails, it shows an error message.
+
+🎯 Next Steps
+
+Want to improve this further? Consider:
+
+Adding retry logic for failed API calls.
+
+Implementing custom loading spinners.
+
+Extending BaseComponent to handle POST, PUT, DELETE requests.
+
+🚀 Happy Coding!
