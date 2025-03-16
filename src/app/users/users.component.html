@@ -1,0 +1,23 @@
+<h2>User List</h2>
+
+<!-- Show loading message while fetching data -->
+<p *ngIf="isLoading">Loading users... 🔄</p>
+
+<!-- Show error message if API call fails -->
+<p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
+
+<!-- Show user list when data is available -->
+<table *ngIf="!isLoading && !errorMessage && users.length > 0" border="1">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+      </tr>
+    </tbody>
+  </table>
